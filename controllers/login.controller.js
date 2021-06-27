@@ -1,7 +1,7 @@
 module.exports = {
-    findUserByLoginPassword: (req, res) => {
-        const {user} = req;
+  findUserByLoginPassword: (req, res) => {
+    const { user } = req;
 
-        res.json(user);
-    }
-}
+    res.json(user);
+  }
+};
