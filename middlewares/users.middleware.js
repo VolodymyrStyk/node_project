@@ -1,4 +1,9 @@
-const { errorMessage, statusCode } = require('../constants');
+const { statusCode } = require('../constants');
+const {
+  ErrorHandler, errorMessages: {
+    BAD_ID, EMPTY_LOGIN, EMPTY_PASSWORD, SHORT_PASS, USER_EXIST, WRONG_LOGIN_OR_PASS
+  }
+} = require('../errors');
 const db = require('../dataBase/users.dataBase.json');
 
 module.exports = {
@@ -8,14 +13,14 @@ module.exports = {
       const userById = db[userId];
 
       if (!userById) {
-        throw new Error(errorMessage.BAD_ID);
+        throw new ErrorHandler(statusCode.BAD_REQUEST, BAD_ID.message, BAD_ID.code);
       }
 
       req.user = userById;
 
       next();
-    } catch (e) {
-      res.status(statusCode.BAD_REQUEST).json(e.message);
+    } catch (err) {
+      next(err);
     }
   },
 
@@ -24,20 +29,20 @@ module.exports = {
       const { login, password } = req.body;
 
       if (!login) {
-        throw new Error(errorMessage.EMPTY_LOGIN);
+        throw new ErrorHandler(statusCode.BAD_REQUEST, EMPTY_LOGIN.message, EMPTY_LOGIN.code);
       }
 
       if (!password) {
-        throw new Error(errorMessage.EMPTY_PASSWORD);
+        throw new ErrorHandler(statusCode.BAD_REQUEST, EMPTY_PASSWORD.message, EMPTY_PASSWORD.code);
       }
 
       if (password.length < 3) {
-        throw new Error(errorMessage.SHORT_PASS);
+        throw new ErrorHandler(statusCode.BAD_REQUEST, SHORT_PASS.message, SHORT_PASS.code);
       }
 
       next();
-    } catch (e) {
-      res.status(statusCode.BAD_REQUEST).json(e.message);
+    } catch (err) {
+      next(err);
     }
   },
 
@@ -48,12 +53,12 @@ module.exports = {
       const findUserByLogin = db.find(({ login: existLogin }) => existLogin === login);
 
       if (findUserByLogin) {
-        throw new Error(errorMessage.USER_EXIST);
+        throw new ErrorHandler(statusCode.CONFLICT, USER_EXIST.message, USER_EXIST.code);
       }
 
       next();
-    } catch (e) {
-      res.status(statusCode.BAD_REQUEST).json(e.message);
+    } catch (err) {
+      next(err);
     }
   },
   findUser: (req, res, next) => {
@@ -63,14 +68,14 @@ module.exports = {
       const findUser = db.find(({ login: existLog, password: existPass }) => existLog === login && existPass === password);
 
       if (!findUser) {
-        throw new Error(errorMessage.WRONG_LOGIN_OR_PASS);
+        throw new ErrorHandler(statusCode.BAD_REQUEST, WRONG_LOGIN_OR_PASS.message, WRONG_LOGIN_OR_PASS.code);
       }
 
       req.user = findUser;
 
       next();
-    } catch (e) {
-      res.status(statusCode.BAD_REQUEST).json(e.message);
+    } catch (err) {
+      next(err);
     }
   },
 };
