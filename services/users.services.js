@@ -16,8 +16,6 @@ module.exports = {
     return db;
   },
 
-  findOneById: (userId) => db[userId],
-
   deleteUser: (userId) => {
     const deletedUser = db.splice(userId, 1);
 
@@ -28,7 +26,12 @@ module.exports = {
 
   updateCurrentUser: (userId, body) => {
     db[userId] = body;
+    writeFilePromise(dbPath, JSON.stringify(db));
 
+    return db;
+  },
+  updateCurrentUserFields: (userId, body) => {
+    db[userId] = { ...db[userId], ...body };
     writeFilePromise(dbPath, JSON.stringify(db));
 
     return db;

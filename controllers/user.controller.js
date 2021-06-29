@@ -9,10 +9,9 @@ module.exports = {
   },
 
   getUserById: (req, res) => {
-    const { userId } = req.params;
-    const userById = usersService.findOneById(userId);
+    const { user } = req;
 
-    res.json(userById);
+    res.json(user);
   },
 
   createUser: (req, res) => {
@@ -34,5 +33,13 @@ module.exports = {
     const userById = usersService.deleteUser(userId);
 
     res.json(userById);
+  },
+  updateSomeFieldUser: (req, res) => {
+    const { userId } = req.params;
+    const { body } = req;
+
+    usersService.updateCurrentUserFields(userId, body);
+
+    res.json(success.UPDATE_USER);
   }
 };
