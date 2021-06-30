@@ -32,11 +32,11 @@ function _handleErrors(err, req, res, next) {
     });
 }
 
-function _notFoundHandler(err, req, res, next) {
+function _notFoundHandler(req, res, next) {
   next({
-    status: err.status || statusCode.NOT_FOUND,
-    message: err.message || ROUTE_NOT_FOUND.message,
-    code: err.code || statusCode.UNKNOWN
+    status: statusCode.NOT_FOUND,
+    message: ROUTE_NOT_FOUND.message,
+    code: ROUTE_NOT_FOUND.code
   });
 }
 
