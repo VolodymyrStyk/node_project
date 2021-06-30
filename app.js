@@ -8,15 +8,15 @@ _mogooseConnector();
 
 const apiRouter = require('./routes');
 const { server, statusCode } = require('./constants');
-const { errorMessages: { ROUTE_NOT_FOUND } } = require('./errors');
+const { errorMessages: { ROUTE_NOT_FOUND, UNKNOWN_ERROR } } = require('./errors');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'static')));
 
 app.use('/', apiRouter);
-app.use(_handleErrors);
 app.use('*', _notFoundHandler);
+app.use(_handleErrors);
 
 app.listen(server.PORT, () => {
   console.log(`App works: ${server.HOST}:${server.PORT}`);
@@ -27,8 +27,8 @@ function _handleErrors(err, req, res, next) {
   res
     .status(err.status)
     .json({
-      message: err.message || 'Unknown error',
-      customCode: err.code || 0
+      message: err.message || UNKNOWN_ERROR.message,
+      customCode: err.code || statusCode.UNKNOWN
     });
 }
 
@@ -36,6 +36,7 @@ function _notFoundHandler(err, req, res, next) {
   next({
     status: err.status || statusCode.NOT_FOUND,
     message: err.message || ROUTE_NOT_FOUND.message,
+    code: err.code || statusCode.UNKNOWN
   });
 }
 

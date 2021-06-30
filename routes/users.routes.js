@@ -5,14 +5,14 @@ const { usersMiddleware } = require('../middlewares');
 
 router.get('/', usersController.getAllUsers);
 
-router.get('/:userId', usersMiddleware.checkIsIdValid, usersController.getUserById);
+router.get('/:userId', usersMiddleware.checkIsUserExist, usersController.getUserById);
 
 router.post('/', usersMiddleware.isUserInputCreateDataValid, usersMiddleware.isLoginExist, usersController.createUser);
 
-router.put('/:userId', usersMiddleware.checkIsIdValid, usersMiddleware.isUserInputCreateDataValid, usersController.updateUser);
+router.put('/:userId', usersMiddleware.checkIsUserExist, usersMiddleware.isUserInputCreateDataValid, usersController.updateUser);
 
-router.patch('/:userId', usersMiddleware.checkIsIdValid, usersController.updateSomeFieldUser);
+router.patch('/:userId', usersMiddleware.checkIsUserExist, usersController.updateSomeFieldUser);
 
-router.delete('/:userId', usersMiddleware.checkIsIdValid, usersController.deleteUserById);
+router.delete('/:userId', usersMiddleware.checkIsUserExist, usersController.deleteUserById);
 
 module.exports = router;

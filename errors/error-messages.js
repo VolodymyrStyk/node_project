@@ -49,4 +49,8 @@ module.exports = {
     code: 4091
   },
 
+  UNKNOWN_ERROR: {
+    message: 'Unknown error',
+    code: 0
+  }
 };

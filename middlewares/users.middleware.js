@@ -7,13 +7,13 @@ const {
 } = require('../errors');
 
 module.exports = {
-  checkIsIdValid: async (req, res, next) => {
+  checkIsUserExist: async (req, res, next) => {
     try {
       const { userId } = req.params;
       const userById = await UserModel.findById(userId);
 
       if (!userById) {
-        throw new ErrorHandler(statusCode.BAD_REQUEST, BAD_ID.message, BAD_ID.code);
+        throw new ErrorHandler(statusCode.NOT_FOUND, BAD_ID.message, BAD_ID.code);
       }
 
       req.user = userById;

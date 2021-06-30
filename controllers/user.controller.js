@@ -27,7 +27,7 @@ module.exports = {
     try {
       const cretedUser = await UserModel.create(req.body);
 
-      res.status(statusCode.CREATED).json(cretedUser);
+      res.status(statusCode.CREATED_UPDATED).json(cretedUser);
     } catch (err) {
       next(err);
     }
@@ -40,7 +40,7 @@ module.exports = {
 
       await usersService.updateCurrentUser(userId, body);
 
-      res.json(success.UPDATE_USER);
+      res.status(statusCode.CREATED_UPDATED).json(success.UPDATE_USER);
     } catch (err) {
       next(err);
     }
@@ -51,7 +51,7 @@ module.exports = {
       const { userId } = req.params;
       await UserModel.findByIdAndDelete(userId);
 
-      res.json(success.DELETED_SUCCESS);
+      res.status(statusCode.NO_CONTENT_DELETED).json(success.DELETED_SUCCESS);
     } catch (err) {
       next(err);
     }
@@ -61,9 +61,9 @@ module.exports = {
       const { userId } = req.params;
       const { body } = req;
 
-      await usersService.updateCurrentUserFields(userId, body);
+      await usersService.updateCurrentUser(userId, body);
 
-      res.json(success.UPDATE_USER);
+      res.status(statusCode.CREATED_UPDATED).json(success.UPDATE_USER);
     } catch (err) {
       next(err);
     }
