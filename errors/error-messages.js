@@ -34,6 +34,16 @@ module.exports = {
     code: 4005
   },
 
+  EMPTY_EMAIL: {
+    message: 'Can not register. Empty email field!',
+    code: 4006
+  },
+
+  EMPTY_NAME: {
+    message: 'Can not register. Empty name field!',
+    code: 4007
+  },
+
   USER_EXIST: {
     message: 'User exist, please input another login',
     code: 4091

@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 
 const app = express();
 
+_mogooseConnector();
+
 const apiRouter = require('./routes');
 const { server, statusCode } = require('./constants');
 const { errorMessages: { ROUTE_NOT_FOUND } } = require('./errors');
@@ -22,7 +24,6 @@ app.listen(server.PORT, () => {
 
 // eslint-disable-next-line no-unused-vars
 function _handleErrors(err, req, res, next) {
-  console.log(err);
   res
     .status(err.status)
     .json({
@@ -31,15 +32,16 @@ function _handleErrors(err, req, res, next) {
     });
 }
 
-function _notFoundHandler(req, res) {
-  res.status(statusCode.NOT_FOUND)
-    .json({
-      message: ROUTE_NOT_FOUND.message,
-      customCode: ROUTE_NOT_FOUND.code
-    });
+function _notFoundHandler(err, req, res, next) {
+  next({
+    status: err.status || statusCode.NOT_FOUND,
+    message: err.message || ROUTE_NOT_FOUND.message,
+  });
 }
 
-// eslint-disable-next-line no-unused-vars
 function _mogooseConnector() {
-  mongoose.connect('mongodb://localhost:27017/myNodeApp', { useNewUrlParser: true });
+  mongoose.connect('mongodb://localhost:27017/myNodeApp', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  });
 }

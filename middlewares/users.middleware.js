@@ -1,16 +1,16 @@
 const { statusCode } = require('../constants');
+const { UserModel } = require('../dataBase');
 const {
   ErrorHandler, errorMessages: {
-    BAD_ID, EMPTY_LOGIN, EMPTY_PASSWORD, SHORT_PASS, USER_EXIST, WRONG_LOGIN_OR_PASS
+    BAD_ID, EMPTY_LOGIN, EMPTY_PASSWORD, SHORT_PASS, USER_EXIST, WRONG_LOGIN_OR_PASS, EMPTY_EMAIL, EMPTY_NAME
   }
 } = require('../errors');
-const db = require('../dataBase/users.dataBase.json');
 
 module.exports = {
-  checkIsIdValid: (req, res, next) => {
+  checkIsIdValid: async (req, res, next) => {
     try {
-      const userId = +req.params.userId;
-      const userById = db[userId];
+      const { userId } = req.params;
+      const userById = await UserModel.findById(userId);
 
       if (!userById) {
         throw new ErrorHandler(statusCode.BAD_REQUEST, BAD_ID.message, BAD_ID.code);
@@ -24,7 +24,39 @@ module.exports = {
     }
   },
 
-  isUserInputDataValid: (req, res, next) => {
+  isUserInputCreateDataValid: (req, res, next) => {
+    try {
+      const {
+        login, password, name, email
+      } = req.body;
+
+      if (!login) {
+        throw new ErrorHandler(statusCode.BAD_REQUEST, EMPTY_LOGIN.message, EMPTY_LOGIN.code);
+      }
+
+      if (!password) {
+        throw new ErrorHandler(statusCode.BAD_REQUEST, EMPTY_PASSWORD.message, EMPTY_PASSWORD.code);
+      }
+
+      if (password.length < 3) {
+        throw new ErrorHandler(statusCode.BAD_REQUEST, SHORT_PASS.message, SHORT_PASS.code);
+      }
+
+      if (!name) {
+        throw new ErrorHandler(statusCode.BAD_REQUEST, EMPTY_NAME.message, EMPTY_NAME.code);
+      }
+
+      if (!email) {
+        throw new ErrorHandler(statusCode.BAD_REQUEST, EMPTY_EMAIL.message, EMPTY_EMAIL.code);
+      }
+
+      next();
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  isUserInputLoginDataValid: (req, res, next) => {
     try {
       const { login, password } = req.body;
 
@@ -46,11 +78,11 @@ module.exports = {
     }
   },
 
-  isLoginExist: (req, res, next) => {
+  isLoginExist: async (req, res, next) => {
     try {
       const { body } = req;
       const { login } = body;
-      const findUserByLogin = db.find(({ login: existLogin }) => existLogin === login);
+      const [findUserByLogin] = await UserModel.find({ login });
 
       if (findUserByLogin) {
         throw new ErrorHandler(statusCode.CONFLICT, USER_EXIST.message, USER_EXIST.code);
@@ -61,11 +93,12 @@ module.exports = {
       next(err);
     }
   },
-  findUser: (req, res, next) => {
+
+  findUser: async (req, res, next) => {
     try {
       const { body } = req;
       const { login, password } = body;
-      const findUser = db.find(({ login: existLog, password: existPass }) => existLog === login && existPass === password);
+      const [findUser] = await UserModel.find({ login, password });
 
       if (!findUser) {
         throw new ErrorHandler(statusCode.BAD_REQUEST, WRONG_LOGIN_OR_PASS.message, WRONG_LOGIN_OR_PASS.code);

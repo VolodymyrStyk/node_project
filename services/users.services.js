@@ -1,39 +1,11 @@
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
-
-const writeFilePromise = util.promisify(fs.writeFile);
-const dbPath = path.join(__dirname, '..', 'dataBase', 'users.dataBase.json');
-const db = require('../dataBase/users.dataBase.json');
+const { UserModel } = require('../dataBase');
 
 module.exports = {
-  findAll: () => db,
-
-  insertUser: (userObject) => {
-    db.push(userObject);
-    writeFilePromise(dbPath, JSON.stringify(db));
-
-    return db;
+  updateCurrentUser: async (userId, body) => {
+    await UserModel.findByIdAndUpdate(userId, body, { runValidators: true, useFindAndModify: false });
   },
 
-  deleteUser: (userId) => {
-    const deletedUser = db.splice(userId, 1);
-
-    writeFilePromise(dbPath, JSON.stringify(db));
-
-    return deletedUser;
-  },
-
-  updateCurrentUser: (userId, body) => {
-    db[userId] = body;
-    writeFilePromise(dbPath, JSON.stringify(db));
-
-    return db;
-  },
-  updateCurrentUserFields: (userId, body) => {
-    db[userId] = { ...db[userId], ...body };
-    writeFilePromise(dbPath, JSON.stringify(db));
-
-    return db;
+  updateCurrentUserFields: async (userId, body) => {
+    await UserModel.findByIdAndUpdate(userId, body, { runValidators: true, useFindAndModify: false });
   }
 };

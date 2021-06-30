@@ -1,45 +1,71 @@
 const { usersService } = require('../services');
-const { success } = require('../constants');
+const { success, statusCode } = require('../constants');
+const { UserModel } = require('../dataBase');
 
 module.exports = {
-  getAllUsers: (req, res) => {
-    const users = usersService.findAll();
+  getAllUsers: async (req, res, next) => {
+    try {
+      const users = await UserModel.find({});
 
-    res.json(users);
+      res.json(users);
+    } catch (err) {
+      next(err);
+    }
   },
 
-  getUserById: (req, res) => {
-    const { user } = req;
+  getUserById: (req, res, next) => {
+    try {
+      const { user } = req;
 
-    res.json(user);
+      res.json(user);
+    } catch (err) {
+      next(err);
+    }
   },
 
-  createUser: (req, res) => {
-    usersService.insertUser(req.body);
+  createUser: async (req, res, next) => {
+    try {
+      const cretedUser = await UserModel.create(req.body);
 
-    res.json(success.NEW_USER);
-  },
-  updateUser: (req, res) => {
-    const { userId } = req.params;
-    const { body } = req;
-
-    usersService.updateCurrentUser(userId, body);
-
-    res.json(success.UPDATE_USER);
+      res.status(statusCode.CREATED).json(cretedUser);
+    } catch (err) {
+      next(err);
+    }
   },
 
-  deleteUserById: (req, res) => {
-    const { userId } = req.params;
-    const userById = usersService.deleteUser(userId);
+  updateUser: async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const { body } = req;
 
-    res.json(userById);
+      await usersService.updateCurrentUser(userId, body);
+
+      res.json(success.UPDATE_USER);
+    } catch (err) {
+      next(err);
+    }
   },
-  updateSomeFieldUser: (req, res) => {
-    const { userId } = req.params;
-    const { body } = req;
 
-    usersService.updateCurrentUserFields(userId, body);
+  deleteUserById: async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      await UserModel.findByIdAndDelete(userId);
 
-    res.json(success.UPDATE_USER);
+      res.json(success.DELETED_SUCCESS);
+    } catch (err) {
+      next(err);
+    }
+  },
+  updateSomeFieldUser: async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const { body } = req;
+
+      await usersService.updateCurrentUserFields(userId, body);
+
+      res.json(success.UPDATE_USER);
+    } catch (err) {
+      next(err);
+    }
   }
 };

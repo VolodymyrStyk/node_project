@@ -7,9 +7,9 @@ router.get('/', usersController.getAllUsers);
 
 router.get('/:userId', usersMiddleware.checkIsIdValid, usersController.getUserById);
 
-router.post('/', usersMiddleware.isUserInputDataValid, usersMiddleware.isLoginExist, usersController.createUser);
+router.post('/', usersMiddleware.isUserInputCreateDataValid, usersMiddleware.isLoginExist, usersController.createUser);
 
-router.put('/:userId', usersMiddleware.checkIsIdValid, usersMiddleware.isUserInputDataValid, usersController.updateUser);
+router.put('/:userId', usersMiddleware.checkIsIdValid, usersMiddleware.isUserInputCreateDataValid, usersController.updateUser);
 
 router.patch('/:userId', usersMiddleware.checkIsIdValid, usersController.updateSomeFieldUser);
 

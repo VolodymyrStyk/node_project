@@ -1,7 +1,11 @@
 module.exports = {
-  findUserByLoginPassword: (req, res) => {
-    const { user } = req;
+  findUserByLoginPassword: (req, res, next) => {
+    try {
+      const { user } = req;
 
-    res.json(user);
+      res.json(user);
+    } catch (err) {
+      next(err);
+    }
   }
 };
