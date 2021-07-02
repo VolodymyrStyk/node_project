@@ -41,7 +41,7 @@ function _notFoundHandler(req, res, next) {
 }
 
 function _mogooseConnector() {
-  mongoose.connect('mongodb://localhost:27017/myNodeApp', {
+  mongoose.connect('mongodb://localhost:27017/NodeApp', {
     useNewUrlParser: true,
     useUnifiedTopology: true
   });

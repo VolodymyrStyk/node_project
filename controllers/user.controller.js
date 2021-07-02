@@ -1,6 +1,7 @@
-const { usersService } = require('../services');
 const { success, statusCode } = require('../constants');
 const { UserModel } = require('../dataBase');
+const { passwordHasher } = require('../helpers');
+const { usersService } = require('../services');
 
 module.exports = {
   getAllUsers: async (req, res, next) => {
@@ -25,7 +26,9 @@ module.exports = {
 
   createUser: async (req, res, next) => {
     try {
-      const cretedUser = await UserModel.create(req.body);
+      const { password } = req.body;
+      const hashedPassword = await passwordHasher.hash(password);
+      const cretedUser = await UserModel.create({ ...req.body, password: hashedPassword });
 
       res.status(statusCode.CREATED_UPDATED).json(cretedUser);
     } catch (err) {
@@ -37,8 +40,12 @@ module.exports = {
     try {
       const { userId } = req.params;
       const { body } = req;
+      const { password } = body;
 
-      await usersService.updateCurrentUser(userId, body);
+      const hashedPassword = await passwordHasher.hash(password);
+      const userData = { ...req.body, password: hashedPassword };
+
+      await usersService.updateCurrentUser(userId, userData);
 
       res.status(statusCode.CREATED_UPDATED).json(success.UPDATE_USER);
     } catch (err) {
@@ -56,12 +63,22 @@ module.exports = {
       next(err);
     }
   },
-  updateSomeFieldUser: async (req, res, next) => {
+
+  updateSomeField: async (req, res, next) => {
     try {
       const { userId } = req.params;
       const { body } = req;
+      const { password } = body;
 
-      await usersService.updateCurrentUser(userId, body);
+      if (password) {
+        const hashedPassword = await passwordHasher.hash(password);
+        const userData = { ...req.body, password: hashedPassword };
+        await usersService.updateCurrentUser(userId, userData);
+      }
+
+      if (!password) {
+        await usersService.updateCurrentUser(userId, body);
+      }
 
       res.status(statusCode.CREATED_UPDATED).json(success.UPDATE_USER);
     } catch (err) {

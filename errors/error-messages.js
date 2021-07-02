@@ -44,6 +44,11 @@ module.exports = {
     code: 4007
   },
 
+  VALIDATION_ERROR: {
+    message: 'Can not register. Empty email field!',
+    code: 4008
+  },
+
   USER_EXIST: {
     message: 'User exist, please input another login',
     code: 4091

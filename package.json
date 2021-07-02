@@ -2,7 +2,9 @@
   "name": "node_project",
   "version": "1.0.0",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "express": "^4.17.1",
+    "joi": "^17.4.0",
     "mongoose": "^5.13.0"
   },
   "devDependencies": {

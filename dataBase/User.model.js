@@ -3,10 +3,10 @@ const { Schema, model } = require('mongoose');
 const { dataBaseTablesEnum, userRolesEnum } = require('../constants');
 
 const userSchema = new Schema({
-  login: {
+  email: {
     type: String,
-    required: true,
     unique: true,
+    required: true
   },
   password: {
     type: String,
@@ -16,14 +16,10 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  email: {
-    type: String,
-    unique: true,
-    required: true
-  },
   age: {
     type: Number,
-    default: 17
+    default: 17,
+    required: true,
   },
   role: {
     type: String,

@@ -1,5 +1,5 @@
 module.exports = {
-  findUserByLoginPassword: (req, res, next) => {
+  showUser: (req, res, next) => {
     try {
       const { user } = req;
 

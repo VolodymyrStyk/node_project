@@ -7,11 +7,11 @@ router.get('/', usersController.getAllUsers);
 
 router.get('/:userId', usersMiddleware.checkIsUserExist, usersController.getUserById);
 
-router.post('/', usersMiddleware.isUserInputCreateDataValid, usersMiddleware.isLoginExist, usersController.createUser);
+router.post('/', usersMiddleware.checkAllDataValid, usersMiddleware.checkEmailExist, usersController.createUser);
 
-router.put('/:userId', usersMiddleware.checkIsUserExist, usersMiddleware.isUserInputCreateDataValid, usersController.updateUser);
+router.put('/:userId', usersMiddleware.checkIsUserExist, usersMiddleware.checkAllDataValid, usersController.updateUser);
 
-router.patch('/:userId', usersMiddleware.checkIsUserExist, usersController.updateSomeFieldUser);
+router.patch('/:userId', usersMiddleware.checkIsUserExist, usersMiddleware.checkSomeDataValid, usersController.updateSomeField);
 
 router.delete('/:userId', usersMiddleware.checkIsUserExist, usersController.deleteUserById);
 
