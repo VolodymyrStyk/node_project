@@ -49,6 +49,11 @@ module.exports = {
     code: 4008
   },
 
+  WRONG_ID_FORMAT: {
+    message: 'Wrong ID format, please check ID',
+    code: 4009
+  },
+
   USER_EXIST: {
     message: 'User exist, please input another login',
     code: 4091

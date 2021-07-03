@@ -1,12 +1,24 @@
 const { statusCode } = require('../constants');
 const { UserModel } = require('../dataBase');
-const { ErrorHandler, errorMessages: { BAD_ID, USER_EXIST, VALIDATION_ERROR } } = require('../errors');
-const { userValid: { userValidator, userUpdateValidator } } = require('../validators');
+const {
+  ErrorHandler,
+  errorMessages:
+        {
+          BAD_ID, USER_EXIST, VALIDATION_ERROR, WRONG_ID_FORMAT
+        }
+} = require('../errors');
+const { userValid: { userValidator, userUpdateValidator, userIdValidator } } = require('../validators');
 
 module.exports = {
   checkIsUserExist: async (req, res, next) => {
     try {
       const { userId } = req.params;
+      const isIdValid = userIdValidator(userId);
+
+      if (!isIdValid) {
+        throw new ErrorHandler(statusCode.BAD_REQUEST, WRONG_ID_FORMAT.message, WRONG_ID_FORMAT.code);
+      }
+
       const userById = await UserModel.findById(userId);
 
       if (!userById) {

@@ -3,7 +3,6 @@ const { errorMessages: { ROUTE_NOT_FOUND, UNKNOWN_ERROR } } = require('../errors
 
 // eslint-disable-next-line no-unused-vars
 function _handleErrors(err, req, res, next) {
-  console.log(6, err.status);
   res
     .status(err.status)
     .json({

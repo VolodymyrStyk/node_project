@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-_mogooseConnector();
+_mongooseConnector();
 
 const apiRouter = require('./routes');
 const { server } = require('./constants');
@@ -22,7 +22,7 @@ app.listen(server.PORT, () => {
   console.log(`App works on: ${server.HOST}:${server.PORT}`);
 });
 
-function _mogooseConnector() {
+function _mongooseConnector() {
   mongoose.connect('mongodb://localhost:27017/NodeApp', {
     useNewUrlParser: true,
     useUnifiedTopology: true
