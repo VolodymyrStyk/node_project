@@ -2,13 +2,13 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 
+const { server } = require('./constants');
+const { errorsHandler: { _notFoundHandler, _handleErrors } } = require('./helpers');
+const apiRouter = require('./routes');
+
 const app = express();
 
 _mongooseConnector();
-
-const apiRouter = require('./routes');
-const { server } = require('./constants');
-const { errorsHandler: { _notFoundHandler, _handleErrors } } = require('./helpers');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,8 +23,5 @@ app.listen(server.PORT, () => {
 });
 
 function _mongooseConnector() {
-  mongoose.connect('mongodb://localhost:27017/NodeApp', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  });
+  mongoose.connect(server.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 }
