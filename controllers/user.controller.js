@@ -1,7 +1,6 @@
 const { success, statusCode } = require('../constants');
 const { UserModel } = require('../dataBase');
 const { passwordHasher } = require('../helpers');
-const { usersService } = require('../services');
 
 module.exports = {
   getAllUsers: async (req, res, next) => {
@@ -27,6 +26,7 @@ module.exports = {
   createUser: async (req, res, next) => {
     try {
       const { password } = req.body;
+
       const hashedPassword = await passwordHasher.hash(password);
       const cretedUser = await UserModel.create({ ...req.body, password: hashedPassword });
 
@@ -43,9 +43,10 @@ module.exports = {
       const { password } = body;
 
       const hashedPassword = await passwordHasher.hash(password);
+
       const userData = { ...req.body, password: hashedPassword };
 
-      await usersService.updateCurrentUser(userId, userData);
+      await UserModel.findByIdAndUpdate(userId, userData, { runValidators: true, useFindAndModify: false });
 
       res.status(statusCode.CREATED_UPDATED).json(success.UPDATE_USER);
     } catch (err) {
@@ -56,6 +57,7 @@ module.exports = {
   deleteUserById: async (req, res, next) => {
     try {
       const { userId } = req.params;
+
       await UserModel.findByIdAndDelete(userId);
 
       res.status(statusCode.NO_CONTENT_DELETED).json(success.DELETED_SUCCESS);
@@ -72,12 +74,14 @@ module.exports = {
 
       if (password) {
         const hashedPassword = await passwordHasher.hash(password);
+
         const userData = { ...req.body, password: hashedPassword };
-        await usersService.updateCurrentUser(userId, userData);
+
+        await UserModel.findByIdAndUpdate(userId, userData, { runValidators: true, useFindAndModify: false });
       }
 
       if (!password) {
-        await usersService.updateCurrentUser(userId, body);
+        await UserModel.findByIdAndUpdate(userId, body, { runValidators: true, useFindAndModify: false });
       }
 
       res.status(statusCode.CREATED_UPDATED).json(success.UPDATE_USER);

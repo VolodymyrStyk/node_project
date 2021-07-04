@@ -5,14 +5,29 @@ const { usersMiddleware } = require('../middlewares');
 
 router.get('/', usersController.getAllUsers);
 
-router.get('/:userId', usersMiddleware.checkIsUserExist, usersController.getUserById);
+router.get('/:userId',
+  usersMiddleware.checkIsUserExist,
+  usersController.getUserById);
 
-router.post('/', usersMiddleware.checkAllDataValid, usersMiddleware.checkEmailExist, usersController.createUser);
+router.post('/',
+  usersMiddleware.checkAllDataValid,
+  usersMiddleware.checkEmailExist,
+  usersController.createUser);
 
-router.put('/:userId', usersMiddleware.checkIsUserExist, usersMiddleware.checkAllDataValid, usersController.updateUser);
+router.put('/:userId',
+  usersMiddleware.checkIsUserExist,
+  usersMiddleware.checkAllDataValid,
+  usersMiddleware.checkEmailExist,
+  usersController.updateUser);
 
-router.patch('/:userId', usersMiddleware.checkIsUserExist, usersMiddleware.checkSomeDataValid, usersController.updateSomeField);
+router.patch('/:userId',
+  usersMiddleware.checkIsUserExist,
+  usersMiddleware.checkSomeDataValid,
+  usersMiddleware.checkEmailExist,
+  usersController.updateSomeField);
 
-router.delete('/:userId', usersMiddleware.checkIsUserExist, usersController.deleteUserById);
+router.delete('/:userId',
+  usersMiddleware.checkIsUserExist,
+  usersController.deleteUserById);
 
 module.exports = router;

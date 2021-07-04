@@ -55,7 +55,7 @@ module.exports = {
   },
 
   USER_EXIST: {
-    message: 'User exist, please input another login',
+    message: 'User with this EMAIL exist, please input another EMAIL',
     code: 4091
   },
 

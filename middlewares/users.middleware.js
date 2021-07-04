@@ -1,11 +1,12 @@
 const { statusCode } = require('../constants');
 const { UserModel } = require('../dataBase');
 const {
-  ErrorHandler,
-  errorMessages:
-        {
-          BAD_ID, USER_EXIST, VALIDATION_ERROR, WRONG_ID_FORMAT
-        }
+  ErrorHandler, errorMessages: {
+    BAD_ID,
+    USER_EXIST,
+    VALIDATION_ERROR,
+    WRONG_ID_FORMAT
+  }
 } = require('../errors');
 const { userValid: { userValidator, userUpdateValidator, userIdValidator } } = require('../validators');
 
