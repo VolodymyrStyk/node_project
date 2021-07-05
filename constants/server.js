@@ -1,5 +1,5 @@
 module.exports = {
-  PORT: 3000,
-  HOST: 'http://localhost',
-  MONGO_URI: 'mongodb://localhost:27017/NodeApp',
+  PORT: process.env.PORT || 3000,
+  HOST: process.env.HOST || 'http://localhost',
+  DB_CONNECTION_URI: process.env.DB_CONNECTION_URI || 'mongodb://localhost:27017/NodeApp',
 };

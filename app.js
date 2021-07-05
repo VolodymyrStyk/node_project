@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 const { server } = require('./constants');
 const { errorsHandler: { _notFoundHandler, _handleErrors } } = require('./helpers');
@@ -23,5 +24,5 @@ app.listen(server.PORT, () => {
 });
 
 function _mongooseConnector() {
-  mongoose.connect(server.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+  mongoose.connect(server.DB_CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 }
