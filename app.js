@@ -1,7 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
-require('dotenv').config();
 
 const { server } = require('./constants');
 const { errorsHandler: { _notFoundHandler, _handleErrors } } = require('./helpers');

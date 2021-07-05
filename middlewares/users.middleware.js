@@ -5,7 +5,8 @@ const {
     BAD_ID,
     USER_EXIST,
     VALIDATION_ERROR,
-    WRONG_ID_FORMAT
+    WRONG_ID_FORMAT,
+    FORBIDDEN_ACCES
   }
 } = require('../errors');
 const { userValid: { userValidator, userUpdateValidator, userIdValidator } } = require('../validators');
@@ -70,6 +71,24 @@ module.exports = {
 
       if (findUserByEmail) {
         throw new ErrorHandler(statusCode.CONFLICT, USER_EXIST.message, USER_EXIST.code);
+      }
+
+      next();
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  checkUserRole: (rolesArr = []) => (req, res, next) => {
+    try {
+      if (!rolesArr || !rolesArr.length) {
+        return next();
+      }
+
+      const { role } = req.user;
+
+      if (!rolesArr.includes(role)) {
+        throw new ErrorHandler(statusCode.FORBIDDEN, FORBIDDEN_ACCES.message, FORBIDDEN_ACCES.code);
       }
 
       next();

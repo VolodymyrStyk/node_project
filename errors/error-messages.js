@@ -59,6 +59,11 @@ module.exports = {
     code: 4091
   },
 
+  FORBIDDEN_ACCES: {
+    message: 'Forbidden. Permission denied!!!',
+    code: 4031
+  },
+
   UNKNOWN_ERROR: {
     message: 'Unknown error',
     code: 0
