@@ -1,5 +1,5 @@
 module.exports = {
-  showUser: (req, res, next) => {
+  loginUser: (req, res, next) => {
     try {
       const { user } = req;
 
