@@ -20,7 +20,7 @@ router.patch('/:userId',
   usersMiddleware.checkEmailExist,
   usersController.updateSomeField);
 
-router.use('/:userId', usersMiddleware.checkUserRole(['admin']));
+router.use('/:userId', usersMiddleware.checkUserRole());
 
 router.put('/:userId',
   usersMiddleware.checkAllDataValid,

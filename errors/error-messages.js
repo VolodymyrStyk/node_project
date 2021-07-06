@@ -67,5 +67,11 @@ module.exports = {
   UNKNOWN_ERROR: {
     message: 'Unknown error',
     code: 0
+  },
+
+  UNAUTHORIZED: {
+    message: 'Unauthorized user, NO TOKEN, please authorize.',
+    code: 4011
   }
+
 };
