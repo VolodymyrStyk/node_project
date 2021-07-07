@@ -26,7 +26,7 @@ oAuthSchema.pre('create', function() {
   this.populate('user_id');
 });
 
-oAuthSchema.pre('findOneAndUpdate', function() {
+oAuthSchema.pre('findOneAndDelete', function() {
   this.populate('user_id');
 });
 
