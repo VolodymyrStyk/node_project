@@ -1,9 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
-const {
-  server: { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET },
-  authConst: { ACCESS, ACCESS_T_DURATION, REFRESH_T_DURATION }
-} = require('../constants');
+const { authConst: { ACCESS, ACCESS_T_DURATION, REFRESH_T_DURATION } } = require('../constants');
+const { config: { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } } = require('../config');
 
 const verifyTokenPromise = promisify(jwt.verify);
 

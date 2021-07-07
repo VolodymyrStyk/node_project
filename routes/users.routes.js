@@ -1,28 +1,33 @@
 const router = require('express').Router();
 
 const { usersController } = require('../controllers');
-const { usersMiddleware, authMiddleware } = require('../middlewares');
+const { ACCESS_TOKEN_TYPE } = require('../constants/auth.constants');
+const { userMiddleware, authMiddleware } = require('../middlewares');
+const { userValid: { userUpdateValidator, userValidator } } = require('../validators');
 
 router.get('/', usersController.getAllUsers);
 
 router.post('/',
-  usersMiddleware.checkAllDataValid,
-  usersMiddleware.checkEmailExist,
+  userMiddleware.checkAllDataValid,
+  userMiddleware.checkEmailExist,
   usersController.createUser);
 
-router.use('/:userId', usersMiddleware.checkUserRole(), usersMiddleware.checkIsUserExist, authMiddleware.checkAccessToken);
+router.use('/:userId',
+  userMiddleware.checkUserRole(),
+  userMiddleware.checkIsUserExist,
+  authMiddleware.checkToken(ACCESS_TOKEN_TYPE));
 
 router.get('/:userId',
   usersController.getUserById);
 
 router.patch('/:userId',
-  usersMiddleware.checkSomeDataValid,
-  usersMiddleware.checkEmailExist,
+  userMiddleware.checkDataValid(userUpdateValidator),
+  userMiddleware.checkEmailExist,
   usersController.updateSomeField);
 
 router.put('/:userId',
-  usersMiddleware.checkAllDataValid,
-  usersMiddleware.checkEmailExist,
+  userMiddleware.checkDataValid(userValidator),
+  userMiddleware.checkEmailExist,
   usersController.updateUser);
 
 router.delete('/:userId',

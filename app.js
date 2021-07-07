@@ -4,7 +4,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 
-const { server } = require('./constants');
+const { config: { HOST, PORT, DB_CONNECTION_URI } } = require('./config');
 const { errorsHandler: { _notFoundHandler, _handleErrors } } = require('./helpers');
 const apiRouter = require('./routes');
 
@@ -20,10 +20,10 @@ app.use('/', apiRouter);
 app.use('*', _notFoundHandler);
 app.use(_handleErrors);
 
-app.listen(server.PORT, () => {
-  console.log(`App works on: ${server.HOST}:${server.PORT}`);
+app.listen(PORT, () => {
+  console.log(`App works on: ${HOST}:${PORT}`);
 });
 
 function _mongooseConnector() {
-  mongoose.connect(server.DB_CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+  mongoose.connect(DB_CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 }
