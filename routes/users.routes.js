@@ -15,12 +15,12 @@ router.use('/:userId', usersMiddleware.checkIsUserExist, authMiddleware.checkAcc
 router.get('/:userId',
   usersController.getUserById);
 
+router.use('/:userId', usersMiddleware.checkUserRole(),);
+
 router.patch('/:userId',
   usersMiddleware.checkSomeDataValid,
   usersMiddleware.checkEmailExist,
   usersController.updateSomeField);
-
-router.use('/:userId', usersMiddleware.checkUserRole(),);
 
 router.put('/:userId',
   usersMiddleware.checkAllDataValid,
