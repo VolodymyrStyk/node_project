@@ -1,6 +1,10 @@
-const { statusCode, success: { AUTHORIZATION } } = require('../constants');
+const { statusCode, authConst: { AUTHORIZATION } } = require('../constants');
 const { UserModel, OAuthModel } = require('../dataBase');
-const { ErrorHandler, errorMessages: { WRONG_LOGIN_OR_PASS, VALIDATION_ERROR, UNAUTHORIZED } } = require('../errors');
+const {
+  ErrorHandler, errorMessages: {
+    WRONG_LOGIN_OR_PASS, VALIDATION_ERROR, UNAUTHORIZED, WRONG_TOKEN
+  }
+} = require('../errors');
 const { passwordHasher } = require('../helpers');
 const { authValid: { authentValidator } } = require('../validators');
 const { authService } = require('../services');
@@ -52,11 +56,34 @@ module.exports = {
       const tokenObject = await OAuthModel.findOne({ accessToken: token });
 
       if (!tokenObject) {
-        throw new ErrorHandler(statusCode.UNAUTHORIZED, UNAUTHORIZED.message, UNAUTHORIZED.code);
+        throw new ErrorHandler(statusCode.UNAUTHORIZED, WRONG_TOKEN.message, WRONG_TOKEN.code);
       }
 
       req.user = tokenObject.user_id;
 
+      next();
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  checkRefreshToken: async (req, res, next) => {
+    try {
+      const token = req.get(AUTHORIZATION);
+
+      if (!token) {
+        throw new ErrorHandler(statusCode.UNAUTHORIZED, UNAUTHORIZED.message, UNAUTHORIZED.code);
+      }
+
+      await authService.verifyToken(token);
+
+      const tokenObject = await OAuthModel.findOneAndDelete({ refreshToken: token });
+
+      if (!tokenObject) {
+        throw new ErrorHandler(statusCode.UNAUTHORIZED, WRONG_TOKEN.message, WRONG_TOKEN.code);
+      }
+
+      req.user = tokenObject.user_id;
       next();
     } catch (err) {
       next(err);

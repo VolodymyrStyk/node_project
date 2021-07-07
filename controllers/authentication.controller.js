@@ -1,6 +1,6 @@
 const { OAuthModel } = require('../dataBase');
 const { authService } = require('../services');
-const { success: { AUTHORIZATION, SUCCESS } } = require('../constants');
+const { success: { SUCCESS }, authConst: { AUTHORIZATION }, statusCode } = require('../constants');
 
 module.exports = {
   login: async (req, res, next) => {
@@ -11,7 +11,7 @@ module.exports = {
 
       await OAuthModel.create({ ...tokkenPair, user_id: _id });
 
-      res.json({ ...tokkenPair, user: req.user });
+      res.status(statusCode.CREATED_UPDATED).json({ ...tokkenPair, user: req.user });
     } catch (err) {
       next(err);
     }
@@ -23,17 +23,21 @@ module.exports = {
 
       await OAuthModel.remove({ accessToken: token });
 
-      res.json(SUCCESS);
+      res.status(statusCode.NO_CONTENT_DELETED).json(SUCCESS);
     } catch (err) {
       next(err);
     }
   },
 
-  refresh: (req, res, next) => {
+  refresh: async (req, res, next) => {
     try {
-      const { body } = req;
+      const { _id } = req.user;
 
-      res.json(body);
+      const tokkenPair = authService.generateTokenPair();
+
+      await OAuthModel.create({ ...tokkenPair, user_id: _id });
+
+      res.status(statusCode.CREATED_UPDATED).json({ ...tokkenPair, user: req.user });
     } catch (err) {
       next(err);
     }

@@ -3,5 +3,4 @@ module.exports = {
   SUCCESS: 'Success.',
   UPDATE_USER: 'Success. You update user data.',
   DELETED_SUCCESS: 'Success. You delete user. ',
-  AUTHORIZATION: 'Authorization'
 };

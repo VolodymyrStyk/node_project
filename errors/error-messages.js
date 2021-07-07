@@ -72,6 +72,11 @@ module.exports = {
   UNAUTHORIZED: {
     message: 'Unauthorized user, NO TOKEN, please authorize.',
     code: 4011
+  },
+
+  WRONG_TOKEN: {
+    message: 'Unauthorized user, WRONG TOKEN, please authorize, or refresh token.',
+    code: 4012
   }
 
 };
