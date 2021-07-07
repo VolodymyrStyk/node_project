@@ -10,12 +10,10 @@ router.post('/',
   usersMiddleware.checkEmailExist,
   usersController.createUser);
 
-router.use('/:userId', usersMiddleware.checkIsUserExist, authMiddleware.checkAccessToken);
+router.use('/:userId', usersMiddleware.checkUserRole(), usersMiddleware.checkIsUserExist, authMiddleware.checkAccessToken);
 
 router.get('/:userId',
   usersController.getUserById);
-
-router.use('/:userId', usersMiddleware.checkUserRole(),);
 
 router.patch('/:userId',
   usersMiddleware.checkSomeDataValid,
