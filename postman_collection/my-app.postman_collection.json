@@ -198,23 +198,72 @@
 									"urlencoded": [
 										{
 											"key": "email",
-											"value": "mail@i.ua",
+											"value": "mail1@i.ua",
 											"type": "text"
 										},
 										{
 											"key": "password",
-											"value": "passworD1",
+											"value": "passwordA1",
 											"type": "text"
 										}
 									]
 								},
 								"url": {
-									"raw": "{{hostApi}}/authentication",
+									"raw": "{{hostApi}}/authentication/login",
 									"host": [
 										"{{hostApi}}"
 									],
 									"path": [
-										"authentication"
+										"authentication",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/logout",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjU2MDYxMDIsImV4cCI6MTYyNTYwNjcwMn0.5tkFApFb5YlAkqq57jn-wQuvUzzBOymKAF5bbKvdPtw",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostApi}}/authentication/logout",
+									"host": [
+										"{{hostApi}}"
+									],
+									"path": [
+										"authentication",
+										"logout"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/refresh",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjU2NjU4MDEsImV4cCI6MTYyODI1NzgwMX0.O7QVDrojlAfgZdmd_zMM4POv2oIdy_JWV7eBKe3QzDg",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostApi}}/authentication/refresh",
+									"host": [
+										"{{hostApi}}"
+									],
+									"path": [
+										"authentication",
+										"refresh"
 									]
 								}
 							},
