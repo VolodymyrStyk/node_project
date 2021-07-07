@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 const { usersController } = require('../controllers');
-const { usersMiddleware } = require('../middlewares');
+const { usersMiddleware, authMiddleware } = require('../middlewares');
 
 router.get('/', usersController.getAllUsers);
 
@@ -10,7 +10,7 @@ router.post('/',
   usersMiddleware.checkEmailExist,
   usersController.createUser);
 
-router.use('/:userId', usersMiddleware.checkIsUserExist);
+router.use('/:userId', usersMiddleware.checkIsUserExist, authMiddleware.checkAccessToken);
 
 router.get('/:userId',
   usersController.getUserById);
@@ -20,7 +20,7 @@ router.patch('/:userId',
   usersMiddleware.checkEmailExist,
   usersController.updateSomeField);
 
-router.use('/:userId', usersMiddleware.checkUserRole());
+router.use('/:userId', usersMiddleware.checkUserRole(),);
 
 router.put('/:userId',
   usersMiddleware.checkAllDataValid,
