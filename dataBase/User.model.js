@@ -25,6 +25,13 @@ const userSchema = new Schema({
     type: String,
     enum: Object.values(userRolesEnum),
     default: userRolesEnum.USER
+  },
+  activate: {
+    type: Boolean,
+    default: false
+  },
+  mailToken: {
+    type: String
   }
 }, { timestamps: true, toObject: { virtuals: true }, toJSON: { virtuals: true } });
 

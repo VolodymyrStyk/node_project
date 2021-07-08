@@ -9,6 +9,11 @@ module.exports = {
     code: 4042
   },
 
+  TEMPLATE_NOT_FOUND: {
+    message: 'Wrong template, can not found.',
+    code: 4043
+  },
+
   BAD_ID: {
     message: 'Bad ID parameters, please input correct ID',
     code: 4001
