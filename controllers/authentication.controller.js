@@ -4,8 +4,9 @@ const {
   success: { SUCCESS },
   authConst: { AUTHORIZATION },
   statusCode,
-  emailActiosEnum: { WELCOME, PASSWORD_CHANGE }
+  emailActiosEnum: { WELCOME, LOG_OUT }
 } = require('../constants');
+const { userHelpers } = require('../helpers');
 
 module.exports = {
   login: async (req, res, next) => {
@@ -17,7 +18,9 @@ module.exports = {
       await OAuthModel.create({ ...tokenPair, user_id: _id });
       await mailService.sendMail(email, WELCOME, { userName: name });
 
-      res.status(statusCode.CREATED_UPDATED).json({ ...tokenPair, user: req.user });
+      const normalizeUser = userHelpers.userNormalizator(req.user.toJSON());
+
+      res.status(statusCode.CREATED_UPDATED).json({ ...tokenPair, user: normalizeUser });
     } catch (err) {
       next(err);
     }
@@ -29,7 +32,7 @@ module.exports = {
       const token = req.get(AUTHORIZATION);
 
       await OAuthModel.remove({ accessToken: token });
-      await mailService.sendMail(email, PASSWORD_CHANGE, { userName: name });
+      await mailService.sendMail(email, LOG_OUT, { userName: name });
 
       res.status(statusCode.NO_CONTENT_DELETED).json(SUCCESS);
     } catch (err) {
@@ -48,7 +51,9 @@ module.exports = {
 
       await OAuthModel.create({ ...tokkenPair, user_id: _id });
 
-      res.status(statusCode.CREATED_UPDATED).json({ ...tokkenPair, user: req.user });
+      const normalizeUser = userHelpers.userNormalizator(req.user.toJSON());
+
+      res.status(statusCode.CREATED_UPDATED).json({ ...tokkenPair, user: normalizeUser });
     } catch (err) {
       next(err);
     }
@@ -63,7 +68,9 @@ module.exports = {
       await OAuthModel.create({ ...tokkenPair, user_id: _id });
       await mailService.sendMail(email, WELCOME, { userName: name });
 
-      res.status(statusCode.CREATED_UPDATED).json({ ...tokkenPair, user: req.user });
+      const normalizeUser = userHelpers.userNormalizator(req.user.toJSON());
+
+      res.status(statusCode.CREATED_UPDATED).json({ ...tokkenPair, user: normalizeUser });
     } catch (err) {
       next(err);
     }

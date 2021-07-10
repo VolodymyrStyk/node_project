@@ -6,9 +6,9 @@ module.exports = {
     subject: 'Welcome on board'
   },
 
-  [emailActiosEnum.PASSWORD_CHANGE]: {
-    templateName: 'changePassword',
-    subject: 'Password was changed'
+  [emailActiosEnum.LOG_OUT]: {
+    templateName: 'LogOut',
+    subject: 'Log Out, buy'
   },
 
   [emailActiosEnum.CREATE_NEW_USER]: {

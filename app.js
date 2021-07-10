@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const path = require('path');
 const mongoose = require('mongoose');
 
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'static')));
 
+app.use(fileUpload({}));
 app.use('/', apiRouter);
 app.use('*', _notFoundHandler);
 app.use(_handleErrors);

@@ -8,6 +8,8 @@ const { userValid: { userUpdateValidator, userValidator } } = require('../valida
 router.get('/', usersController.getAllUsers);
 
 router.post('/',
+  userMiddleware.checkUploadFiles,
+  userMiddleware.checkAvatar,
   userMiddleware.checkAllDataValid,
   userMiddleware.checkEmailExist,
   usersController.createUser);
@@ -32,5 +34,12 @@ router.put('/:userId',
 
 router.delete('/:userId',
   usersController.deleteUserById);
+
+router.get('/:userId/avatar',
+  usersController.getAvatar);
+
+// router.post('/:userId/avatar',
+//   userMiddleware.checkUploadFiles,
+//   usersController.addAvatar);
 
 module.exports = router;

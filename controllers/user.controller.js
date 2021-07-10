@@ -1,14 +1,24 @@
-const { success, statusCode, emailTemp } = require('../constants');
+const path = require('path');
+const fs = require('fs');
+const { promisify } = require('util');
+const {
+  success, statusCode, emailTemp, itemType, fileType
+} = require('../constants');
 const { emailActiosEnum: { CREATE_NEW_USER, DELETE_USER, UPDATE_USER } } = require('../constants');
 const { config: { SERVICE_EMAIL_ACTIVATE } } = require('../config');
 const { UserModel } = require('../dataBase');
-const { passwordHasher } = require('../helpers');
+const { passwordHasher, userHelpers, fileDirBuider: { fileDirBuilder } } = require('../helpers');
 const { mailService, authService } = require('../services');
+
+const mkdirPromise = promisify(fs.mkdir);
+const readDirPromise = promisify(fs.readdir);
 
 module.exports = {
   getAllUsers: async (req, res, next) => {
     try {
-      const users = await UserModel.find({});
+      const users = await UserModel.find({}).lean();
+
+      users.map((user) => userHelpers.userNormalizator(user));
 
       res.json(users);
     } catch (err) {
@@ -19,8 +29,9 @@ module.exports = {
   getUserById: (req, res, next) => {
     try {
       const { user } = req;
+      const normalizeUser = userHelpers.userNormalizator(user.toJSON());
 
-      res.json(user);
+      res.json(normalizeUser);
     } catch (err) {
       next(err);
     }
@@ -28,19 +39,34 @@ module.exports = {
 
   createUser: async (req, res, next) => {
     try {
-      const { password, email, name } = req.body;
+      const {
+        avatar,
+        body: { password, email, name }
+      } = req;
 
       const hashedPassword = await passwordHasher.hash(password);
       const tokenPair = authService.generateTokenPair();
       req.body.mailToken = tokenPair.accessToken;
 
       const cretedUser = await UserModel.create({ ...req.body, password: hashedPassword });
-      const { mailToken } = cretedUser;
+      const { mailToken, _id } = cretedUser;
       const activateUrl = SERVICE_EMAIL_ACTIVATE + mailToken;
 
-      await mailService.sendMail(email, CREATE_NEW_USER, { userName: name, activateUrl, userMail: email }, emailTemp.SUBJ_CREATE);
+      await mailService.sendMail(email, CREATE_NEW_USER, {
+        userName: name,
+        activateUrl,
+        userMail: email
+      }, emailTemp.SUBJ_CREATE);
 
-      res.status(statusCode.CREATED_UPDATED).json(cretedUser);
+      if (avatar) {
+        const { finalPath, filePath } = await fileDirBuilder(avatar.name, _id, itemType.USERS, fileType.PHOTOS);
+        await avatar.mv(finalPath);
+        await UserModel.updateOne({ _id }, { avatar: filePath });
+      }
+
+      const normalizedUser = userHelpers.userNormalizator(cretedUser.toJSON());
+
+      res.status(statusCode.CREATED_UPDATED).json(normalizedUser);
     } catch (err) {
       next(err);
     }
@@ -103,5 +129,32 @@ module.exports = {
     } catch (err) {
       next(err);
     }
-  }
+  },
+
+  addAvatar: async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const dirPath = path.join(process.cwd(), 'static', itemType.USERS, userId.toString(), fileType.PHOTOS);
+
+      const dirFiles = await mkdirPromise(dirPath);
+
+      res.json(dirFiles[0]);
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  getAvatar: async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const dirPath = path.join(process.cwd(), 'static', itemType.USERS, userId.toString(), fileType.PHOTOS);
+
+      const dirFiles = await readDirPromise(dirPath);
+
+      res.json(dirFiles[0]);
+    } catch (e) {
+      next(e);
+    }
+  },
+
 };

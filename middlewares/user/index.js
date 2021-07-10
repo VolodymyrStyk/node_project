@@ -4,5 +4,7 @@ module.exports = {
   checkSomeDataValid: require('./checkSomeDataValid'),
   checkEmailExist: require('./checkEmailExist'),
   checkUserRole: require('./checkUserRole'),
-  checkDataValid: require('./checkDataValid')
+  checkDataValid: require('./checkDataValid'),
+  checkUploadFiles: require('./uploadFiles.middleware'),
+  checkAvatar: require('./checkAvatar'),
 };

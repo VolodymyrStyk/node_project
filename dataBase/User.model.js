@@ -32,7 +32,10 @@ const userSchema = new Schema({
   },
   mailToken: {
     type: String
-  }
+  },
+  avatar: {
+    type: String
+  },
 }, { timestamps: true, toObject: { virtuals: true }, toJSON: { virtuals: true } });
 
 userSchema.virtual('Full Name').get(function() {

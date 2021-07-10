@@ -6,3 +6,7 @@ module.exports.regexp = require('./regexp');
 module.exports.authConst = require('./auth.constants');
 module.exports.emailActiosEnum = require('./email-actions.enum');
 module.exports.emailTemp = require('./email.templates.enum');
+module.exports.mimeType = require('./fileMimetype.constants');
+module.exports.itemType = require('./itemType.constants');
+module.exports.fileType = require('./fileType.constants');
+module.exports.normalizeConst = require('./normalizator.constants');

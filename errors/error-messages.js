@@ -59,6 +59,21 @@ module.exports = {
     code: 4009
   },
 
+  WRONG_MIME_TYPE: {
+    message: (name) => `Wrong file ${name} format, please try another file.`,
+    code: 40010
+  },
+
+  FILE_SIZE_ERROR: {
+    message: (name) => `File ${name} which you upload is to big, please load another file.`,
+    code: 40011
+  },
+
+  AVATAR_UPLOAD: {
+    message: 'Please, load only one avatar',
+    code: 40012
+  },
+
   USER_EXIST: {
     message: 'User with this EMAIL exist, please input another EMAIL',
     code: 4091
