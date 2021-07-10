@@ -7,4 +7,5 @@ module.exports = {
   SERVICE_EMAIL: process.env.SERVICE_EMAIL || 'No Email service',
   SERVICE_EMAIL_LOGIN: process.env.SERVICE_EMAIL_LOGIN || 'No Email',
   SERVICE_EMAIL_PASS: process.env.SERVICE_EMAIL_PASS || 'No Pass',
+  SERVICE_EMAIL_ACTIVATE: process.env.SERVICE_EMAIL_ACTIVATE || 'No url'
 };

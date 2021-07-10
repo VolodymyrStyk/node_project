@@ -5,7 +5,7 @@ const path = require('path');
 const { config: { SERVICE_EMAIL, SERVICE_EMAIL_LOGIN, SERVICE_EMAIL_PASS } } = require('../config');
 const templateInfo = require('../email-templates/index');
 const { ErrorHandler, errorMessages: { TEMPLATE_NOT_FOUND } } = require('../errors');
-const { statusCode } = require('../constants');
+const { statusCode, emailTemp: { FROM_SERVER } } = require('../constants');
 
 const templateParser = new EmailTemplates({
   views: {
@@ -21,7 +21,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-const sendMail = async (userMail, action, context = {}) => {
+const sendMail = async (userMail, action, context = {}, mailSubject = 'Server Mail') => {
   const sendTemplate = templateInfo[action];
 
   if (!sendTemplate) {
@@ -31,9 +31,9 @@ const sendMail = async (userMail, action, context = {}) => {
   const html = await templateParser.render(sendTemplate.templateName, context);
 
   await transporter.sendMail({
-    from: 'No Reply',
+    from: FROM_SERVER,
     to: userMail,
-    subject: 'Hello, user',
+    subject: mailSubject,
     html
   });
 };

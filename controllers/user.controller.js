@@ -1,9 +1,9 @@
-const { success, statusCode } = require('../constants');
+const { success, statusCode, emailTemp } = require('../constants');
+const { emailActiosEnum: { CREATE_NEW_USER, DELETE_USER, UPDATE_USER } } = require('../constants');
+const { config: { SERVICE_EMAIL_ACTIVATE } } = require('../config');
 const { UserModel } = require('../dataBase');
 const { passwordHasher } = require('../helpers');
-
 const { mailService, authService } = require('../services');
-const { emailActiosEnum: { CREATE_NEW_USER, DELETE_USER, UPDATE_USER } } = require('../constants');
 
 module.exports = {
   getAllUsers: async (req, res, next) => {
@@ -36,8 +36,9 @@ module.exports = {
 
       const cretedUser = await UserModel.create({ ...req.body, password: hashedPassword });
       const { mailToken } = cretedUser;
+      const activateUrl = SERVICE_EMAIL_ACTIVATE + mailToken;
 
-      await mailService.sendMail(email, CREATE_NEW_USER, { userName: name, mailToken, userMail: email });
+      await mailService.sendMail(email, CREATE_NEW_USER, { userName: name, activateUrl, userMail: email }, emailTemp.SUBJ_CREATE);
 
       res.status(statusCode.CREATED_UPDATED).json(cretedUser);
     } catch (err) {
@@ -56,7 +57,7 @@ module.exports = {
       const userData = { ...req.body, password: hashedPassword };
 
       await UserModel.findByIdAndUpdate(userId, userData, { runValidators: true, useFindAndModify: false });
-      await mailService.sendMail(email, UPDATE_USER, { userName: name });
+      await mailService.sendMail(email, UPDATE_USER, { userName: name }, emailTemp.SUBJ_UPDATE);
 
       res.status(statusCode.CREATED_UPDATED).json(success.UPDATE_USER);
     } catch (err) {
@@ -70,7 +71,7 @@ module.exports = {
       const { email, name } = req.user;
 
       await UserModel.findByIdAndDelete(userId);
-      await mailService.sendMail(email, DELETE_USER, { userName: name });
+      await mailService.sendMail(email, DELETE_USER, { userName: name }, emailTemp.SUBJ_DELETE);
 
       res.status(statusCode.NO_CONTENT_DELETED).json(success.DELETED_SUCCESS);
     } catch (err) {
@@ -96,7 +97,7 @@ module.exports = {
         await UserModel.findByIdAndUpdate(userId, body, { runValidators: true, useFindAndModify: false });
       }
 
-      await mailService.sendMail(email, UPDATE_USER, { userName: name });
+      await mailService.sendMail(email, UPDATE_USER, { userName: name }, emailTemp.SUBJ_UPDATE);
 
       res.status(statusCode.CREATED_UPDATED).json(success.UPDATE_USER);
     } catch (err) {

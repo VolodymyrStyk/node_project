@@ -7,5 +7,5 @@ block content
         br
         | Please activate your profile. 👇
         br
-        form(action=`http://localhost:3000/authentication/activate/${mailToken}` method="POST")
+        form(action=`${activateUrl}` method="POST")
             button(type="submit" class='btn' ) Click here to approve your email.

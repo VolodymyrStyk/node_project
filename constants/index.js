@@ -5,3 +5,4 @@ module.exports.dataBaseTablesEnum = require('./database-tables.enum');
 module.exports.regexp = require('./regexp');
 module.exports.authConst = require('./auth.constants');
 module.exports.emailActiosEnum = require('./email-actions.enum');
+module.exports.emailTemp = require('./email.templates.enum');
