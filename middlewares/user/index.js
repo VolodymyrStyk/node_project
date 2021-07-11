@@ -7,4 +7,5 @@ module.exports = {
   checkDataValid: require('./checkDataValid'),
   checkUploadFiles: require('./uploadFiles.middleware'),
   checkAvatar: require('./checkAvatar'),
+  isAvatarExist: require('./isAvatarExist'),
 };

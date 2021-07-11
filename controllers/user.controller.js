@@ -1,4 +1,6 @@
 const path = require('path');
+const fs = require('fs');
+const { promisify } = require('util');
 const {
   success, statusCode, emailTemp, itemType, fileType
 } = require('../constants');
@@ -12,6 +14,8 @@ const {
   getSortedDirFiles: { getSortedFiles }
 } = require('../helpers');
 const { mailService, authService } = require('../services');
+
+const unlinkPromise = promisify(fs.unlink);
 
 module.exports = {
   getAllUsers: async (req, res, next) => {
@@ -192,6 +196,28 @@ module.exports = {
       const files = await getSortedFiles(dirPath);
 
       res.json(files);
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  deleteAvatar: async (req, res, next) => {
+    try {
+      const { params: { userId } } = req;
+      const dirPath = path.join(process.cwd(), 'static', itemType.USERS, userId, fileType.PHOTOS);
+
+      const files = await getSortedFiles(dirPath);
+
+      const currentAva = files[0];
+      const previousAva = files[1];
+
+      const pathC = path.join(process.cwd(), 'static', itemType.USERS, userId, fileType.PHOTOS, currentAva);
+      await unlinkPromise(pathC);
+
+      const { filePath } = await fileDirBuilder(previousAva, userId, itemType.USERS, fileType.PHOTOS);
+      await UserModel.updateOne({ _id: userId }, { avatar: filePath });
+
+      res.json(filePath);
     } catch (e) {
       next(e);
     }

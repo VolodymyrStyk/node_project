@@ -42,6 +42,10 @@ router.post('/:userId/avatar',
   userMiddleware.checkUploadFiles,
   usersController.addAvatar);
 
+router.delete('/:userId/avatar',
+  userMiddleware.isAvatarExist,
+  usersController.deleteAvatar);
+
 router.get('/:userId/documents',
   usersController.getDocuments);
 
