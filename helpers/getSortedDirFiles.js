@@ -12,7 +12,7 @@ module.exports = {
         name: fileName,
         time: fs.statSync(`${dir}/${fileName}`).mtime.getTime(),
       }))
-      .sort((a, b) => a.time - b.time)
+      .sort((a, b) => b.time - a.time)
       .map((file) => file.name);
   }
 };
