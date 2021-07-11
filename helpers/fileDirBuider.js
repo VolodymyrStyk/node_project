@@ -10,15 +10,16 @@ module.exports = {
     const pathWithouthStatic = path.join(itemType, itemId.toString(), fileType);
     const uploadPath = path.join(process.cwd(), 'static', pathWithouthStatic);
     const fileExtension = fileName.split('.').pop();
-    const photoName = `${uuid()}.${fileExtension}`;
-    const finalPath = path.join(uploadPath, photoName);
+    const fileNameExt = `${uuid()}.${fileExtension}`;
+    const finalPath = path.join(uploadPath, fileNameExt);
 
     await mkdirPromise(uploadPath, { recursive: true });
 
     return {
       finalPath,
-      filePath: path.join(pathWithouthStatic, photoName),
-      photoName
+      filePath: path.join(pathWithouthStatic, fileNameExt),
+      fileNameExt,
+      uploadPath
     };
   },
 };

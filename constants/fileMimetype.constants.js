@@ -14,7 +14,8 @@ module.exports = {
 
   DOCS_MIMETYPES: [
     'application/msword', // DOC
-    'application/pdf', // PDF
+    'application/pdf', // PDF,
+    'application/txt', // TXT
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLS
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document' // DOC 2007
   ],

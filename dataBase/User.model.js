@@ -36,6 +36,9 @@ const userSchema = new Schema({
   avatar: {
     type: String
   },
+  documents: {
+    type: String
+  }
 }, { timestamps: true, toObject: { virtuals: true }, toJSON: { virtuals: true } });
 
 userSchema.virtual('Full Name').get(function() {

@@ -27,14 +27,14 @@ module.exports = (req, res, next) => {
         }
 
         photos.push(files[i]);
-      } else if (VIDEOS_MIMETYPES) {
+      } else if (VIDEOS_MIMETYPES.includes(mimetype)) {
         if (size > VIDEO_MAX_SIZE) {
           throw ErrorHandler(statusCode.BAD_REQUEST, FILE_SIZE_ERROR.message(name), FILE_SIZE_ERROR.code);
         }
 
         videos.push(files[i]);
-      } else if (DOCS_MIMETYPES) {
-        if (DOCS_MAX_SIZE) {
+      } else if (DOCS_MIMETYPES.includes(mimetype)) {
+        if (size > DOCS_MAX_SIZE) {
           throw ErrorHandler(statusCode.BAD_REQUEST, FILE_SIZE_ERROR.message(name), FILE_SIZE_ERROR.code);
         }
 

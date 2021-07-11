@@ -42,4 +42,11 @@ router.post('/:userId/avatar',
   userMiddleware.checkUploadFiles,
   usersController.addAvatar);
 
+router.get('/:userId/documents',
+  usersController.getDocuments);
+
+router.post('/:userId/documents',
+  userMiddleware.checkUploadFiles,
+  usersController.addDocuments);
+
 module.exports = router;

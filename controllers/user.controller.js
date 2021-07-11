@@ -137,11 +137,11 @@ module.exports = {
       const { userId } = req.params;
 
       if (avatar) {
-        const { finalPath, filePath, photoName } = await fileDirBuilder(avatar.name, userId, itemType.USERS, fileType.PHOTOS);
+        const { finalPath, filePath, fileNameExt } = await fileDirBuilder(avatar.name, userId, itemType.USERS, fileType.PHOTOS);
         await avatar.mv(finalPath);
         await UserModel.updateOne({ _id: userId }, { avatar: filePath });
 
-        res.status(statusCode.CREATED_UPDATED).json(photoName);
+        res.status(statusCode.CREATED_UPDATED).json(fileNameExt);
       }
     } catch (err) {
       next(err);
@@ -162,4 +162,38 @@ module.exports = {
     }
   },
 
+  addDocuments: async (req, res, next) => {
+    try {
+      const [document] = req.documents;
+      const { userId } = req.params;
+
+      if (document) {
+        const {
+          finalPath,
+          uploadPath,
+          fileNameExt
+        } = await fileDirBuilder(document.name, userId, itemType.USERS, fileType.DOCUMENTS);
+        await document.mv(finalPath);
+        await UserModel.updateOne({ _id: userId }, { documents: uploadPath });
+
+        res.status(statusCode.CREATED_UPDATED).json(fileNameExt);
+      }
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getDocuments: async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+
+      const dirPath = path.join(process.cwd(), 'static', itemType.USERS, userId, fileType.DOCUMENTS);
+
+      const files = await getSortedFiles(dirPath);
+
+      res.json(files);
+    } catch (e) {
+      next(e);
+    }
+  },
 };
