@@ -1,17 +1,17 @@
 const path = require('path');
-const fs = require('fs');
-const { promisify } = require('util');
 const {
   success, statusCode, emailTemp, itemType, fileType
 } = require('../constants');
 const { emailActiosEnum: { CREATE_NEW_USER, DELETE_USER, UPDATE_USER } } = require('../constants');
 const { config: { SERVICE_EMAIL_ACTIVATE } } = require('../config');
 const { UserModel } = require('../dataBase');
-const { passwordHasher, userHelpers, fileDirBuider: { fileDirBuilder } } = require('../helpers');
+const {
+  passwordHasher,
+  userHelpers,
+  fileDirBuider: { fileDirBuilder },
+  getSortedDirFiles: { getSortedFiles }
+} = require('../helpers');
 const { mailService, authService } = require('../services');
-
-const mkdirPromise = promisify(fs.mkdir);
-const readDirPromise = promisify(fs.readdir);
 
 module.exports = {
   getAllUsers: async (req, res, next) => {
@@ -133,25 +133,30 @@ module.exports = {
 
   addAvatar: async (req, res, next) => {
     try {
+      const [avatar] = req.photos;
       const { userId } = req.params;
-      const dirPath = path.join(process.cwd(), 'static', itemType.USERS, userId.toString(), fileType.PHOTOS);
 
-      const dirFiles = await mkdirPromise(dirPath);
+      if (avatar) {
+        const { finalPath, filePath, photoName } = await fileDirBuilder(avatar.name, userId, itemType.USERS, fileType.PHOTOS);
+        await avatar.mv(finalPath);
+        await UserModel.updateOne({ _id: userId }, { avatar: filePath });
 
-      res.json(dirFiles[0]);
-    } catch (e) {
-      next(e);
+        res.status(statusCode.CREATED_UPDATED).json(photoName);
+      }
+    } catch (err) {
+      next(err);
     }
   },
 
-  getAvatar: async (req, res, next) => {
+  getAvatars: async (req, res, next) => {
     try {
       const { userId } = req.params;
-      const dirPath = path.join(process.cwd(), 'static', itemType.USERS, userId.toString(), fileType.PHOTOS);
 
-      const dirFiles = await readDirPromise(dirPath);
+      const dirPath = path.join(process.cwd(), 'static', itemType.USERS, userId, fileType.PHOTOS);
 
-      res.json(dirFiles[0]);
+      const files = await getSortedFiles(dirPath);
+
+      res.json(files);
     } catch (e) {
       next(e);
     }

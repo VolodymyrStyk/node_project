@@ -36,10 +36,10 @@ router.delete('/:userId',
   usersController.deleteUserById);
 
 router.get('/:userId/avatar',
-  usersController.getAvatar);
+  usersController.getAvatars);
 
-// router.post('/:userId/avatar',
-//   userMiddleware.checkUploadFiles,
-//   usersController.addAvatar);
+router.post('/:userId/avatar',
+  userMiddleware.checkUploadFiles,
+  usersController.addAvatar);
 
 module.exports = router;

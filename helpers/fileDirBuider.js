@@ -18,7 +18,7 @@ module.exports = {
     return {
       finalPath,
       filePath: path.join(pathWithouthStatic, photoName),
-
+      photoName
     };
   },
 };
