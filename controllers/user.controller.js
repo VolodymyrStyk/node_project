@@ -5,7 +5,7 @@ const {
   success, statusCode, emailTemp, itemType, fileType
 } = require('../constants');
 const { emailActiosEnum: { CREATE_NEW_USER, DELETE_USER, UPDATE_USER } } = require('../constants');
-const { config: { SERVICE_EMAIL_ACTIVATE } } = require('../config');
+const { config: { SERVICE_EMAIL_ACTIVATE, STATIC } } = require('../config');
 const { UserModel } = require('../dataBase');
 const {
   passwordHasher,
@@ -65,10 +65,13 @@ module.exports = {
       if (avatar) {
         const { finalPath, filePath } = await fileDirBuilder(avatar.name, _id, itemType.USERS, fileType.PHOTOS);
         await avatar.mv(finalPath);
+        await UserModel.updateOne({ _id }, { $push: { avatars: filePath } });
         await UserModel.updateOne({ _id }, { avatar: filePath });
+        cretedUser.avatar = filePath;
+        cretedUser.avatars.push(filePath);
       }
 
-      const normalizedUser = userHelpers.userNormalizator(cretedUser.toJSON());
+      const normalizedUser = await userHelpers.userNormalizator(cretedUser.toJSON());
 
       res.status(statusCode.CREATED_UPDATED).json(normalizedUser);
     } catch (err) {
@@ -102,6 +105,10 @@ module.exports = {
 
       await UserModel.findByIdAndDelete(userId);
       await mailService.sendMail(email, DELETE_USER, { userName: name }, emailTemp.SUBJ_DELETE);
+
+      const userPath = path.join(process.cwd(), STATIC, itemType.USERS, userId);
+
+      await unlinkPromise(userPath);
 
       res.status(statusCode.NO_CONTENT_DELETED).json(success.DELETED_SUCCESS);
     } catch (err) {
@@ -143,6 +150,7 @@ module.exports = {
       if (avatar) {
         const { finalPath, filePath, fileNameExt } = await fileDirBuilder(avatar.name, userId, itemType.USERS, fileType.PHOTOS);
         await avatar.mv(finalPath);
+        await UserModel.updateOne({ _id: userId }, { $push: { avatars: filePath } });
         await UserModel.updateOne({ _id: userId }, { avatar: filePath });
 
         res.status(statusCode.CREATED_UPDATED).json(fileNameExt);
@@ -156,7 +164,7 @@ module.exports = {
     try {
       const { userId } = req.params;
 
-      const dirPath = path.join(process.cwd(), 'static', itemType.USERS, userId, fileType.PHOTOS);
+      const dirPath = path.join(process.cwd(), STATIC, itemType.USERS, userId, fileType.PHOTOS);
 
       const files = await getSortedFiles(dirPath);
 
@@ -191,7 +199,7 @@ module.exports = {
     try {
       const { userId } = req.params;
 
-      const dirPath = path.join(process.cwd(), 'static', itemType.USERS, userId, fileType.DOCUMENTS);
+      const dirPath = path.join(process.cwd(), STATIC, itemType.USERS, userId, fileType.DOCUMENTS);
 
       const files = await getSortedFiles(dirPath);
 
@@ -204,14 +212,14 @@ module.exports = {
   deleteAvatar: async (req, res, next) => {
     try {
       const { params: { userId } } = req;
-      const dirPath = path.join(process.cwd(), 'static', itemType.USERS, userId, fileType.PHOTOS);
+      const dirPath = path.join(process.cwd(), STATIC, itemType.USERS, userId, fileType.PHOTOS);
 
       const files = await getSortedFiles(dirPath);
 
       const currentAva = files[0];
       const previousAva = files[1];
 
-      const pathC = path.join(process.cwd(), 'static', itemType.USERS, userId, fileType.PHOTOS, currentAva);
+      const pathC = path.join(process.cwd(), STATIC, itemType.USERS, userId, fileType.PHOTOS, currentAva);
       await unlinkPromise(pathC);
 
       const { filePath } = await fileDirBuilder(previousAva, userId, itemType.USERS, fileType.PHOTOS);
@@ -222,4 +230,30 @@ module.exports = {
       next(e);
     }
   },
+
+  deleteChoseAvatar: async (req, res, next) => {
+    try {
+      const { params: { userId, avatarId } } = req;
+
+      const dirPath = path.join(process.cwd(), STATIC, itemType.USERS, userId, fileType.PHOTOS);
+
+      const deletePhotoDir = path.join(process.cwd(), STATIC, itemType.USERS, userId, fileType.PHOTOS, avatarId);
+      const deletePhotoDB = path.join(itemType.USERS, userId, fileType.PHOTOS, avatarId);
+
+      await unlinkPromise(deletePhotoDir);
+
+      const files = await getSortedFiles(dirPath);
+
+      const [previousAva] = files;
+      const pathCurrent = path.join(itemType.USERS, userId, fileType.PHOTOS, previousAva);
+
+      await UserModel.updateOne({ _id: userId }, { $pull: { avatars: deletePhotoDB } });
+      await UserModel.updateOne({ _id: userId }, { avatar: pathCurrent });
+
+      res.json(avatarId);
+    } catch (e) {
+      next(e);
+    }
+  },
+
 };

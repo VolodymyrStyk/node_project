@@ -46,6 +46,10 @@ router.delete('/:userId/avatar',
   userMiddleware.isAvatarExist,
   usersController.deleteAvatar);
 
+router.delete('/:userId/avatar/:avatarId',
+  userMiddleware.isAvatarExist,
+  usersController.deleteChoseAvatar);
+
 router.get('/:userId/documents',
   usersController.getDocuments);
 

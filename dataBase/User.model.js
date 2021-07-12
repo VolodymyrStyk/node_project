@@ -36,6 +36,9 @@ const userSchema = new Schema({
   avatar: {
     type: String
   },
+  avatars: {
+    type: Array
+  },
   documents: {
     type: String
   }
